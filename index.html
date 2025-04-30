@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayushman Health ATM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e3f2fd, #90caf9);
+            color: #01579b;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode {
+            background: linear-gradient(135deg, #263238, #37474f);
+            color: #b0bec5;
+        }
+
+        .sticky-nav {
+            position: sticky;
+            top: 0;
+            background: linear-gradient(45deg, #0288d1, #4fc3f7);
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            z-index: 100;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .sticky-nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 20px;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .sticky-nav a:hover {
+            background: #01579b;
+            color: #e3f2fd;
+            transform: scale(1.05);
+        }
+
+        .dark-mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            padding: 12px;
+            cursor: pointer;
+            z-index: 200;
+        }
+
+        .dark-mode-toggle img {
+            width: 30px;
+            height: 30px;
+            filter: brightness(2);
+            transition: transform 0.3s;
+        }
+
+        .dark-mode-toggle img:hover {
+            transform: scale(1.1);
+        }
+
+        .section {
+            display: none;
+            padding: 40px;
+            min-height: 100vh;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 40px 60px;
+            background: linear-gradient(45deg, #0288d1, #4fc3f7);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            border-radius: 25px;
+            margin: 30px;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+
+        .header h1 {
+            font-size: 56px;
+            font-weight: 800;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            letter-spacing: 2px;
+            background: linear-gradient(45deg, #ffffff, #90caf9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: pulse 2s infinite;
+            margin-top: 100px;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .header .website-logo {
+            position: absolute;
+            top: 20px;
+            left: 250px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid white;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            filter: brightness(1.5);
+            z-index: 10;
+        }
+
+        .header img:not(.website-logo) {
+            position: absolute;
+            top: 20px;
+            left: 50px;
+            width: 80px;
+            height: 80px;
+            filter: brightness(2);
+            z-index: 10;
+        }
+
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0;
+            animation: slideIn 0.5s ease-in;
+            position: relative;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .search-bar input {
+            padding: 15px;
+            width: 500px;
+            border: none;
+            border-radius: 35px 0 0 35px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            background: rgba(255, 255, 255, 0.3);
+            font-size: 16px;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .search-bar input:focus {
+            background: rgba(255, 255, 255, 0.5);
+            transform: scale(1.02);
+            outline: none;
+        }
+
+        .search-bar button {
+            padding: 15px 30px;
+            border: none;
+            background: linear-gradient(45deg, #0288d1, #4fc3f7);
+            color: white;
+            border-radius: 0 35px 35px 0;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .search-bar button:hover {
+            background: linear-gradient(45deg, #01579b, #0288d1);
+            transform: scale(1.05);
+        }
+
+        .carousel {
+            max-width: 800px;
+            margin: 40px auto;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgbaASL(0, 0, 0, 0.3);
+        }
+
+        .carousel img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            display: none;
+        }
+
+        .carousel img.active {
+            display: block;
+        }
+
+        .website-logo-section {
+            text-align: center;
+            margin: 60px auto;
+            padding: 60px 0;
+        }
+
+        .website-logo-section img {
+            width: 800px;
+            height: 800px;
+            max-width: 100%;
+            border-radius: 50%;
+            border: 5px solid #0288d1;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            animation: spin 10s linear infinite;
+            display: block;
+            margin: 0 auto;
+            object-fit: cover;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .nav-icons {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 40px 0;
+        }
+
+        .nav-icons a img {
+            width: 60px;
+            height: 60px;
+            filter: brightness(2) drop-shadow(0 5px 10px rgba(0, 0, 0, 0.3));
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .nav-icons a img:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(1, 87, 155, 0.5);
+        }
+
+        .for-you {
+            text-align: center;
+            font-size: 36px;
+            font-weight: 700;
+            margin: 40px 0;
+            color: #0277bd;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        body.dark-mode .for-you {
+            color: #90caf9;
+        }
+
+        .services-grid, .offer-grid, .product-grid, .advice-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            padding: 40px;
+        }
+
+        .services-grid div, .offer-grid div, .product-grid div, .advice-grid div {
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            text-align: center;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s, background 0.3s;
+            cursor: pointer;
+        }
+
+        .services-grid div:hover, .offer-grid div:hover, .product-grid div:hover, .advice-grid div:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        body.dark-mode .services-grid div, body.dark-mode .offer-grid div, body.dark-mode .product-grid div, body.dark-mode .advice-grid div {
+            background: rgba(0, 0, 0, 0.4);
+            color: #b0bec5;
+        }
+
+        .offerings, .products, .user-data {
+            padding: 40px;
+            text-align: center;
+        }
+
+        .section-heading, .fitness-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 40px 0;
+            padding: 20px;
+            background: linear-gradient(45deg, #0288d1, #4fc3f7);
+            border-radius: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .fitness-heading {
+            background: linear-gradient(45deg, #ff6f00, #ffca28);
+            box-shadow: 0 15px 30px rgba(255, 111, 0, 0.5);
+            transform: perspective(1000px) rotateX(10deg);
+            transition: transform 0.5s;
+        }
+
+        .fitness-heading:hover {
+            transform: perspective(1000px) rotateX(0deg);
+        }
+
+        .section-heading h2, .fitness-heading h2 {
+            font-size: 42px;
+            font-weight: 800;
+            color: white;
+            margin-left: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-heading img.icon, .fitness-heading img.icon {
+            width: 60px;
+            height: 60px;
+            margin-left: 20px;
+            filter: brightness(2);
+        }
+
+        .section-heading img.large-image, .fitness-heading img.large-image {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-right: 20px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            filter: brightness(1.5);
+        }
+
+        .account-form {
+            padding: 40px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            margin: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-mode .account-form {
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .account-form input, .account-form textarea {
+            display: block;
+            margin: 20px auto;
+            padding: 15px;
+            width: 90%;
+            max-width: 400px;
+            border: none;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        .account-form input:focus, .account-form textarea:focus {
+            background: rgba(255, 255, 255, 0.5);
+            outline: none;
+        }
+
+        .account-form button, .back-btn, .refresh-btn {
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #0288d1, #4fc3f7);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .account-form button:hover, .back-btn:hover, .refresh-btn:hover {
+            background: linear-gradient(45deg, #01579b, #0288d1);
+            transform: scale(1.05);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            margin: 30px;
+        }
+
+        body.dark-mode .footer {
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .footer h3 {
+            font-size: 80px;
+            font-weight: 800;
+            color: #0277bd;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-mode .footer h3 {
+            color: #90caf9;
+        }
+
+        .footer p.copyright {
+            font-weight: 700;
+            color: #4fc3f7;
+            font-size: 18px;
+        }
+
+        .footer a {
+            color: #0277bd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        body.dark-mode .footer a {
+            color: #90caf9;
+        }
+
+        .footer a:hover {
+            color: #01579b;
+        }
+
+        .chatbot-icon {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 200;
+        }
+
+        .chatbot-icon img {
+            width: 80px;
+            height: 80px;
+            filter: brightness(2) drop-shadow(0 5px 10px rgba(0, 0, 0, 0.3));
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .chatbot-icon img:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(1, 87, 155, 0.5);
+        }
+
+        .chatbox {
+            border: 2px solid #0288d1;
+            border-radius: 25px;
+            padding: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.2);
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        body.dark-mode .chatbox {
+            background: rgba(0, 0, 0, 0.4);
+            border-color: #37474f;
+        }
+
+        .chatbox p {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .chatbox .user-message {
+            background: linear-gradient(45deg, #0288d1, #4fc3f7);
+            color: white;
+            text-align: right;
+            margin-left: 20%;
+        }
+
+        .chatbox .bot-message {
+            background: rgba(255, 255, 255, 0.5);
+            color: #01579b;
+            text-align: left;
+            margin-right: 20%;
+        }
+
+        body.dark-mode .chatbox .bot-message {
+            background: rgba(0, 0, 0, 0.7);
+            color: #b0bec5;
+        }
+
+        .chatbox input {
+            width: 80%;
+            padding: 15px;
+            border-radius: 20px;
+            border: none;
+            background: rgba(255, 255, 255, 0.3);
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        .chatbox button {
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #0288d1, #4fc3f7);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .chatbox button:hover {
+            background: linear-gradient(45deg, #01579b, #0288d1);
+            transform: scale(1.05);
+        }
+
+        .doctor-list, .hospital-list, .pharmacy-list {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .doctor, .hospital, .pharmacy {
+            margin: 30px 0;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            box-shadow: 0 15ooftpx 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
+        }
+
+        .doctor:hover, .hospital:hover, .pharmacy:hover {
+            transform: translateY(-10px);
+        }
+
+        body.dark-mode .doctor, body.dark-mode .hospital, body.dark-mode .pharmacy {
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        ul {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 25px;
+        }
+
+        li {
+            margin: 20px 0;
+            line-height: 1.8;
+        }
+
+        textarea {
+            width: 90%;
+            max-width: 700px;
+            display: block;
+            margin: 30px auto;
+            padding: 20px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            font-size: 16px;
+        }
+
+        input[type="file"] {
+            display: block;
+            margin: 30px auto;
+        }
+
+        .content-image {
+            display: block;
+            margin: 40px auto;
+            width: 100%;
+            max-width: 800px;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            filter: brightness(1.5);
+        }
+
+        .success-page {
+            text-align: center;
+            padding: 100px 40px;
+        }
+
+        .success-page h2 {
+            font-size: 48px;
+            color: #0277bd;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-mode .success-page h2 {
+            color: #90caf9;
+        }
+
+        .success-page p {
+            font-size: 24px;
+            color: #01579b;
+            margin-bottom: 40px;
+        }
+
+        body.dark-mode .success-page p {
+            color: #b0bec5;
+        }
+
+        .error-message {
+            color: #d32f2f;
+            font-size: 14px;
+            margin-top: 5px;
+            text-align: center;
+        }
+
+        #suggestionBox {
+            position: absolute;
+            top: 60px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            width: 500px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        #suggestionBox div {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        #suggestionBox div:hover {
+            background: #e3f2fd;
+        }
+
+        body.dark-mode #suggestionBox {
+            background: rgba(0, 0, 0, 0.7);
+            color: #b0bec5;
+        }
+
+        body.dark-mode #suggestionBox div:hover {
+            background: #37474f;
+        }
+
+        .account-form button.geo-btn {
+            display: block;
+            margin: 10px auto;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #0288d1, #4fc3f7);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .account-form button.geo-btn:hover {
+            background: linear-gradient(45deg, #01579b, #0288d1);
+            transform: scale(1.05);
+        }
+
+        .chatbox button.voice-btn {
+            padding: 15px 20px;
+            background: linear-gradient(45deg, #0288d1, #4fc3f7);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            margin-left: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .chatbox button.voice-btn:hover {
+            background: linear-gradient(45deg, #01579b, #0288d1);
+            transform: scale(1.05);
+        }
+
+        .chatbox button.voice-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="sticky-nav">
+        <a href="#home">Home</a>
+        <a href="#fitness-advice">Fitness</a>
+        <a href="#daily-medicines">Medicines</a>
+        <a href="#doctor-consultation">Doctors</a>
+    </div>
+
+    <div class="dark-mode-toggle">
+        <img src="https://img.icons8.com/ios-filled/50/ffffff/moon-symbol.png" alt="Dark Mode" id="darkModeToggle">
+    </div>
+
+    <!-- Home Section -->
+    <div id="home" class="section active">
+        <header class="header">
+            <img src="https://img.icons8.com/ios-filled/80/ffffff/hospital.png" alt="Health Logo">
+            <img src="https://images.pexels.com/photos/4033148/pexels-photo-4033148.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Website Logo" class="website-logo">
+            <h1>Ayushman Health ATM</h1>
+        </header>
+
+        <div class="search-bar">
+            <input type="text" placeholder="What are you looking for?" id="searchInput">
+            <button onclick="searchSite()">Search</button>
+            <div id="suggestionBox"></div>
+        </div>
+
+        <div class="carousel">
+            <img src="https://images.pexels.com/photos/7088832/pexels-photo-7088832.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Banner 1" class="active">
+            <img src="https://images.pexels.com/photos/3825581/pexels-photo-3825581.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Banner 2">
+            <img src="https://images.pexels.com/photos/3683098/pexels-photo-3683098.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Banner 3">
+        </div>
+
+        <div class="website-logo-section">
+            <img src="https://images.pexels.com/photos/5452293/pexels-photo-5452293.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Website Logo">
+        </div>
+
+        <div class="nav-icons">
+            <a href="#fitness-advice"><img src="https://img.icons8.com/ios-filled/50/01579b/fitness.png" alt="Fitness Advice"></a>
+            <a href="#daily-medicines"><img src="https://img.icons8.com/ios-filled/50/01579b/pill.png" alt="Daily Medicines"></a>
+            <a href="cart.html"><img src="https://img.icons8.com/ios-filled/50/01579b/shopping-cart.png" alt="Cart"></a>
+        </div>
+
+        <div class="for-you">For You</div>
+
+        <div class="services-grid">
+            <div onclick="showSection('nearby-hospitals')">Nearby Hospitals</div>
+            <div onclick="showSection('nearby-pharmacies')">Nearby Pharmacies</div>
+            <div onclick="showSection('basic-health-advice')">Basic Health Advice</div>
+            <div onclick="showSection('doctor-consultation')">Online Doctor Consultation</div>
+        </div>
+
+        <section class="offerings">
+            <div class="fitness-heading">
+                <a href="file:///C:/Users/HP/OneDrive/Desktop/agrin/finals/Grok.html" target="_blank">
+                    <img src="https://img.icons8.com/ios-filled/50/ffffff/dumbbell.png" alt="Fitness Icon" class="icon">
+                    <h2>Leveling Up: Fitness</h2>
+                </a>
+                <img src="https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&cs=tinysrgb&w=200" alt="Fitness Image" class="large-image">
+            </div>
+            <div class="section-heading">
+                <img src="https://img.icons8.com/ios-filled/50/ffffff/offer.png" alt="Offerings Icon" class="icon">
+                <h2>Discover Our Offerings</h2>
+                <img src="https://images.pexels.com/photos/4386466/pexels-photo-4386466.jpeg?auto=compress&cs=tinysrgb&w=200" alt="Offerings Image" class="large-image">
+            </div>
+            <div class="offer-grid">
+                <div onclick="window.open('https://www.1mg.com/drugs-all-medicines', '_blank')">Medicine</div>
+                <div onclick="window.open('https://www.1mg.com/labs', '_blank')">Lab Tests</div>
+                <div onclick="window.open('https://www.1mg.com/categories/healthcare-products-12', '_blank')">Healthcare</div>
+                <div onclick="showSection('health-blogs')">Health Blogs</div>
+            </div>
+        </section>
+
+        <section class="products">
+            <div class="section-heading">
+                <img src="https://img.icons8.com/ios-filled/50/ffffff/shop.png" alt="Products Icon" class="icon">
+                <h2>Shop by Categories</h2>
+                <img src="https://images.pexels.com/photos/3685530/pexels-photo-3685530.jpeg?auto=compress&cs=tinysrgb&w=200" alt="Products Image" class="large-image">
+            </div>
+            <div class="product-grid">
+                <div onclick="window.open('https://www.1mg.com/categories/featured/must-haves-783', '_blank')">Must haves</div>
+                <div onclick="window.open('https://www.1mg.com/categories/featured/summer-essentials-784', '_blank')">Summer essentials</div>
+                <div onclick="window.open('https://www.1mg.com/categories/ayurveda-3', '_blank')">Ayurvedic care</div>
+                <div onclick="window.open('https://www.1mg.com/categories/vitamin-minerals-326', '_blank')">Vitamins & supplements</div>
+            </div>
+            <button class="back-btn" onclick="showSection('home')">Back</button>
+        </section>
+
+        <section class="account-form">
+            <div class="section-heading">
+                <img src="https://img.icons8.com/ios-filled/50/ffffff/user.png" alt="Account Icon" class="icon">
+                <h2>Create an Account</h2>
+                <img src="https://images.pexels.com/photos/5327922/pexels-photo-5327922.jpeg?auto=compress&cs=tinysrgb&w=200" alt="Account Image" class="large-image">
+            </div>
+            <input type="text" placeholder="Name">
+            <input type="text" placeholder="Address">
+            <input type="text" placeholder="Pincode">
+            <input type="text" placeholder="Mobile Number">
+            <button onclick="showSuccessPage()">Submit</button>
+            <div style="margin-top: 30px;">
+                <a href="#my-data"><img src="https://img.icons8.com/ios-filled/50/01579b/database.png" alt="My Data"></a>
+            </div>
+        </section>
+
+        <div class="footer">
+            <h3>Thank You</h3>
+            <p class="copyright">@copyright - Agrin Pandey (Leader)</p>
+            <p>Aman Gupta and Shruti Singh (Co-members)</p>
+            <p>Instagram - <a href="https://www.instagram.com/ayushmanbharatgoi/">Ayushman Bharat</a></p>
+            <p>Telegram - <a href="https://t.me/HealthMinistryIndia">Health Ministry of India</a></p>
+            <p>Google - <a href="https://abdm.gov.in/">Ayushman Bharat Government Website</a></p>
+        </div>
+
+        <div class="chatbot-icon">
+            <a href="https://grok.com" target="_blank"><img src="https://img.icons8.com/ios-filled/50/01579b/chat.png" alt="Chatbot"></a>
+        </div>
+    </div>
+
+    <!-- Nearby Hospitals Section -->
+    <div id="nearby-hospitals" class="section">
+        <div class="section-heading">
+            <img src="https://img.icons8.com/ios-filled/50/ffffff/hospital.png" alt="Hospitals Icon" class="icon">
+            <h2>Nearby Hospitals</h2>
+            <img src="https://images.pexels.com/photos/1692693/pexels-photo-1692693.jpeg?auto=compress&cs=tinysrgb&w=200" alt="Hospitals Image" class="large-image">
+        </div>
+        <div class="account-form" id="hospital-form">
+            <input type="text" placeholder="Address" id="hospitalAddress">
+            <input type="text" placeholder="Pincode" id="hospitalPincode">
+            <button onclick="searchHospitals()">Submit</button>
+            <button class="refresh-btn" onclick="clearHospitalSearch()">Refresh</button>
+        </div>
+        <div id="hospitalResults" class="hospital-list"></div>
+        <button class="back-btn" onclick="showSection('home')">Back</button>
+    </div>
+
+    <!-- Nearby Pharmacies Section -->
+    <div id="nearby-pharmacies" class="section">
+        <div class="section-heading">
+            <img src="https://img.icons8.com/ios-filled/50/ffffff/pharmacy.png" alt="Pharmacies Icon" class="icon">
+            <h2>Nearby Pharmacies</h2>
+            <img src="https://images.pexיפels.com/photos/3559346/pexels-photo-3559346.jpeg?auto=compress&cs=tinysrgb&w=200" alt="Pharmacies Image" class="large-image">
+        </div>
+        <div class="account-form" id="pharmacy-form">
+            <input type="text" placeholder="Address" id="pharmacyAddress">
+            <input type="text" placeholder="Pincode" id="pharmacyPincode">
+            <button onclick="searchPharmacies()">Submit</button>
+            <button class="refresh-btn" onclick="clearPharmacySearch()">Refresh</button>
+        </div>
+        <div id="pharmacyResults" class="pharmacy-list"></div>
+        <button class="back-btn" onclick="showSection('home')">Back</button>
+    </div>
+
+    <!-- Basic Health Advice Section -->
+    <div id="basic-health-advice" class="section">
+        <div class="section-heading">
+            <img src="https://img.icons8.com/ios-filled/50/ffffff/heart-health.png" alt="Health Advice Icon" class="icon">
+            <h2>Basic Health Advice Chatbot</h2>
+            <img src="https://images.pexels.com/photos/4386467/pexels-photo-4386467.jpeg?auto=compress&cs=tinysrgb&w=200" alt="Health Advice Image" class="large-image">
+        </div>
+        <div class="chatbox" id="healthChatbox">
+            <p>Welcome to the Basic Health Advice Chatbot! Ask me about general health tips or minor issues.</p>
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <input type="text" placeholder="Ask a question..." id="healthChatInput">
+            <button onclick="sendHealthChatMessage()">Send</button>
+        </div>
+        <button class="back-btn" onclick="showSection('home')">Back</button>
+    </div>
+
+    <!-- Fitness Advice Section -->
+    <div id="fitness-advice" class="section">
+        <div class="section-heading">
+            <img src="https://img.icons8.com/ios-filled/50/ffffff/fitness.png" alt="Fitness Icon" class="icon">
+            <h2>Fitness Advice</h2>
+            <img src="https://images.pexels.com/photos/841130/pexels-photo-841130.jpeg?auto=compress&cs=tinysrgb&w=200" alt="Fitness Image" class="large-image">
+        </div>
+        <div class="services-grid">
+            <div onclick="showSection('daily-exercise')">Daily Exercise</div>
+            <div onclick="showSection('daily-diet')">Diet</div>
+            <div onclick="showSection('skin-care')">Skin Care</div>
+            <div onclick="showSection('ayurvedic')">Ayurvedic</div>
+        </div>
+        <button class="back-btn" onclick="showSection('home')">Back</button>
+    </div>
+
+    <!-- Daily Exercise Section -->
+    <div id="daily-exercise" class="section">
+        <div class="section-heading">
+            <img src="https://img.icons8.com/ios-filled/50/ffffff/exercise.png" alt="Exercise Icon" class="icon">
+            <h2>Daily Exercise</h2>
+            <img src="https://images.pexels.com/photos/416778/pexels-photo-416778.jpeg?auto=compress&cs=tinysrgb&w=200" alt="Exercise Image" class="large-image">
+        </div>
+        <div style="max-width: 900px; margin: 0 auto;">
+            <h3>Daily Exercise: A Powerful Habit for a Healthier Life</h3>
+            <p>Incorporating exercise into your daily routine is one of the most effective ways to improve both physical and mental health...</p>
+            <button class="back-btn" onclick="showSection('fitness-advice')">Back</button>
+        </div>
+    </div>
+
+    <!-- Daily Diet Section -->
+    <div id="daily-diet" class="section">
+        <div class="section-heading">
+            <img src="https://img.icons8.com/ios-filled/50/ffffff/food.png" alt="Diet Icon" class="icon">
+            <h2>Daily Diet</h2>
+            <img src="https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=200" alt="Diet Image" class="large-image">
+        </div>
+        <div style="max-width: 900px; margin: 0 auto;">
+            <h3>Daily Diet: Fuel Your Body, Nourish Your Life</h3>
+            <p>A well-balanced daily diet is the cornerstone of good health and fitness...</p>
+            <button class="back-btn" onclick="showSection('fitness-advice')">Back</button>
+        </div>
+    </div>
+
+    <!-- Skin Care Section -->
+    <div id="skin-care" class="section">
+        <div class="section-heading">
+            <img src="https://img.icons8.com/ios-filled/50/ffffff/face.png" alt="Skin Care Icon" class="icon">
+            <h2>Skin Care</h2>
+            <img src="https://images.pexels.com/photos/3985166/pexels-photo-3985166.jpeg?auto=compress&cs=tinysrgb&w=200" alt="Skin Care Image" class="large-image">
+        </div>
+        <div style="max-width: 900px; margin: 0 auto;">
+            <h3>Skin Care: Unlock the Secret to Radiant, Healthy Skin</h3>
+            <p>Taking care of your skin is about more than just looking good...</p>
+            <button class="back-btn" onclick="showSection('fitness-advice')">Back</button>
+        </div>
+    </div>
+
+    <!-- Ayurvedic Section -->
+    <div id="ayurvedic" class="section">
+        <div class="section-heading">
+            <img src="https://img.icons8.com/ios-filled/50/ffffff/herb.png" alt="Ayurvedic Icon" class="icon">
+            <h2>Daily Remedies</h2>
+            <img src="https://images.pexels.com/photos/6642979/pexels-photo-6642979.jpeg?auto=compress&cs=tinysrgb&w=200" alt="Ayurvedic Image" class="large-image">
+        </div>
+        <div style="max-width: 900px; margin: 0 auto;">
+            <h3>Daily Remedies: Natural Ways to Boost Your Health and Wellness</h3>
+            <p>In a world brimming with advanced medical technologies...</p>
+            <button class="back-btn" onclick="showSection('fitness-advice')">Back</button>
+        </div>
+    </div>
+
+    <!-- Daily Medicines Section -->
+    <div id="daily-medicines" class="section">
+        <div class="section-heading">
+            <img src="https://img.icons8.com/ios-filled/50/ffffff/pill.png" alt="Medicines Icon" class="icon">
+            <h2>Daily Medicines</h2>
+            <img src="https://images.pexels.com/photos/5938358/pexels-photo-5938358.jpeg?auto=compress&cs=tinysrgb&w=200" alt="Medicines Image" class="large-image">
+        </div>
+        <div style="max-width: 900px; margin: 0 auto; text-align: center;">
+            <p>Explore and purchase your daily medicines from our trusted partner.</p>
+            <button onclick="window.open('https://www.1mg.com/drugs-all-medicines', '_blank')" class="back-btn">Shop at Tata 1mg</button>
+        </div>
+        <button class="back-btn" onclick="showSection('home')">Back</button>
+    </div>
+
+    <!-- Online Doctor Consultation Section -->
+    <div id="doctor-consultation" class="section">
+        <div class="section-heading">
+            <img src="https://img.icons8.com/ios-filled/50/ffffff/doctor.png" alt="Doctors Icon" class="icon">
+            <h2>Online Doctor Consultation</h2>
+            <img src="https://images.pexels.com/photos/5215024/pexels-photo-5215024.jpeg?auto=compress&cs=tinysrgb&w=200" alt="Doctors Image" class="large-image">
+        </div>
+        <div class="account-form" id="doctor-form">
+            <input type="text" placeholder="Address" id="doctorAddress">
+            <input type="text" placeholder="Pincode" id="doctorPincode">
+            <button onclick="searchDoctors()">Submit</button>
+            <button class="refresh-btn" onclick="clearDoctorSearch()">Refresh</button>
+        </div>
+        <div id="doctorResults" style="max-width: 900px; margin: 0 auto;"></div>
+        <button class="back-btn" onclick="showSection('home')">Back</button>
+    </div>
+
+    <!-- My Data Section -->
+    <div id="my-data" class="section">
+        <div class="section-heading">
+            <img src="https://img.icons8.com/ios-filled/50/ffffff/database.png" alt="My Data Icon" class="icon">
+            <h2>My Data</h2>
+            <img src="https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=200" alt="My Data Image" class="large-image">
+        </div>
+        <textarea placeholder="Enter your personal and medical data..." id="userData"></textarea>
+        <input type="file" multiple id="userFiles">
+        <button onclick="saveUserData()">Save</button>
+        <button class="back-btn" onclick="showSection('home')">Back</button>
+    </div>
+
+    <!-- Health Blogs Section -->
+    <div id="health-blogs" class="section">
+        <div class="section-heading">
+            <img src="https://img.icons8.com/ios-filled/50/ffffff/blog.png" alt="Blogs Icon" class="icon">
+            <h2>Health Blogs</h2>
+            <img src="https://images.pexels.com/photos/267669/pexels-photo-267669.jpeg?auto=compress&cs=tinysrgb&w=200" alt="Blogs Image" class="large-image">
+        </div>
+        <div style="max-width: 900px; margin: 0 auto; text-align: center;">
+            <p>Read the latest health blogs from our trusted partner.</p>
+            <button onclick="window.open('https://www.bayhealth.org/community-health-and-wellness/health-news', '_blank')" class="back-btn">Visit Bay Health</button>
+        </div>
+        <button class="back-btn" onclick="showSection('home')">Back</button>
+    </div>
+
+    <!-- Account Creation Success Section -->
+    <div id="account-success" class="section">
+        <div class="success-page">
+            <h2>Account Created Successfully</h2>
+            <p>Further updates and notifications will be provided soon.</p>
+            <button class="back-btn" onclick="showSection('home')">Back to Home</button>
+        </div>
+    </div>
+
+    <script>
+        // Section Navigation
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Carousel Animation
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel img');
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+        }
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        }
+        setInterval(nextSlide, 5000);
+        showSlide(currentSlide);
+
+        // Dark Mode Toggle
+        document.getElementById('darkModeToggle').addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+        });
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+        }
+
+        // Input Validation
+        function validateInput(inputId, type) {
+            const input = document.getElementById(inputId);
+            let errorMessage = input.nextElementSibling;
+            if (!errorMessage || !errorMessage.classList.contains('error-message')) {
+                errorMessage = document.createElement('div');
+                errorMessage.className = 'error-message';
+                input.parentNode.insertBefore(errorMessage, input.nextSibling);
+            }
+            
+            const value = input.value.trim();
+            let isValid = true;
+            let message = '';
+
+            if (type === 'search') {
+                if (value.length < 3) {
+                    isValid = false;
+                    message = 'Search term must be at least 3 characters long.';
+                }
+            } else if (type === 'address') {
+                if (value.length < 5) {
+                    isValid = false;
+                    message = 'Address must be at least 5 characters long.';
+                }
+            } else if (type === 'pincode') {
+                const pincodeRegex = /^\d{6}$/;
+                if (!pincodeRegex.test(value)) {
+                    isValid = false;
+                    message = 'Pincode must be a 6-digit number.';
+                }
+            } else if (type === 'userData') {
+                if (value.length < 10) {
+                    isValid = false;
+                    message = 'Data must be at least 10 characters long.';
+                }
+            }
+
+            errorMessage.textContent = message;
+            input.style.border = isValid ? 'none' : '2px solid #d32f2f';
+            return isValid;
+        }
+
+        // Main Search Bar with Suggestions
+        function searchSite() {
+            const searchInput = document.getElementById('searchInput');
+            const query = searchInput.value.trim().toLowerCase();
+            
+            if (!validateInput('searchInput', 'search')) {
+                return;
+            }
+
+            const sections = {
+                'hospital': 'nearby-hospitals',
+                'pharmacy': 'nearby-pharmacies',
+                'doctor': 'doctor-consultation',
+                'health advice': 'basic-health-advice',
+                'fitness': 'fitness-advice',
+                'medicine': 'daily-medicines',
+                'data': 'my-data',
+                'blogs': 'health-blogs'
+            };
+
+            for (const [keyword, sectionId] of Object.entries(sections)) {
+                if (query.includes(keyword)) {
+                    showSection(sectionId);
+                    return;
+                }
+            }
+
+            alert('No matching section found. Try keywords like "hospital", "pharmacy", or "doctor".');
+        }
+
+        function showSuggestions() {
+            const searchInput = document.getElementById('searchInput');
+            const suggestionBox = document.getElementById('suggestionBox');
+            const query = searchInput.value.trim().toLowerCase();
+            const suggestions = [
+                'Hospitals', 'Pharmacies', 'Doctors', 'Health Advice',
+                'Fitness Advice', 'Daily Medicines', 'My Data', 'Health Blogs'
+            ].filter(s => s.toLowerCase().includes(query));
+
+            suggestionBox.innerHTML = '';
+            if (query.length > 0 && suggestions.length > 0) {
+                suggestions.forEach(suggestion => {
+                    const div = document.createElement('div');
+                    div.textContent = suggestion;
+                    div.addEventListener('click', () => {
+                        searchInput.value = suggestion;
+                        suggestionBox.innerHTML = '';
+                        searchSite();
+                    });
+                    suggestionBox.appendChild(div);
+                });
+            }
+        }
+
+        document.getElementById('searchInput').addEventListener('input', showSuggestions);
+
+        // Hospital Search
+        async function searchHospitals() {
+            const addressInput = document.getElementById('hospitalAddress');
+            const pincodeInput = document.getElementById('hospitalPincode');
+            const resultsDiv = document.getElementById('hospitalResults');
+
+            if (!validateInput('hospitalAddress', 'address') || !validateInput('hospitalPincode', 'pincode')) {
+                return;
+            }
+
+            resultsDiv.innerHTML = '<p>Loading...</p>';
+            try {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                const mockResults = [
+                    { name: 'City Hospital', address: '123 Main St', distance: '2 km' },
+                    { name: 'General Medical Center', address: '456 Park Ave', distance: '5 km' }
+                ];
+
+                resultsDiv.innerHTML = mockResults.map(hospital => `
+                    <div class="hospital">
+                        <h3>${hospital.name}</h3>
+                        <p>Address: ${hospital.address}</p>
+                        <p>Distance: ${hospital.distance}</p>
+                    </div>
+                `).join('');
+            } catch (error) {
+                resultsDiv.innerHTML = '<p>Error fetching hospitals. Please try again.</p>';
+            }
+        }
+
+        function clearHospitalSearch() {
+            const form = document.getElementById('hospital-form');
+            form.reset();
+            document.getElementById('hospitalResults').innerHTML = '';
+            ['hospitalAddress', 'hospitalPincode'].forEach(id => {
+                const input = document.getElementById(id);
+                input.style.border = 'none';
+                const errorMessage = input.nextElementSibling;
+                if (errorMessage && errorMessage.classList.contains('error-message')) {
+                    errorMessage.textContent = '';
+                }
+            });
+        }
+
+        // Pharmacy Search
+        async function searchPharmacies() {
+            const addressInput = document.getElementById('pharmacyAddress');
+            const pincodeInput = document.getElementById('pharmacyPincode');
+            const resultsDiv = document.getElementById('pharmacyResults');
+
+            if (!validateInput('pharmacyAddress', 'address') || !validateInput('pharmacyPincode', 'pincode')) {
+                return;
+            }
+
+            resultsDiv.innerHTML = '<p>Loading...</p>';
+            try {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                const mockResults = [
+                    { name: 'Health Pharmacy', address: '789 Oak St', distance: '1 km' },
+                    { name: 'Wellness Store', address: '101 Pine Rd', distance: '3 km' }
+                ];
+
+                resultsDiv.innerHTML = mockResults.map(pharmacy => `
+                    <div class="pharmacy">
+                        <h3>${pharmacy.name}</h3>
+                        <p>Address: ${pharmacy.address}</p>
+                        <p>Distance: ${pharmacy.distance}</p>
+                    </div>
+                `).join('');
+            } catch (error) {
+                resultsDiv.innerHTML = '<p>Error fetching pharmacies. Please try again.</p>';
+            }
+        }
+
+        function clearPharmacySearch() {
+            const form = document.getElementById('pharmacy-form');
+            form.reset();
+            document.getElementById('pharmacyResults').innerHTML = '';
+            ['pharmacyAddress', 'pharmacyPincode'].forEach(id => {
+                const input = document.getElementById(id);
+                input.style.border = 'none';
+                const errorMessage = input.nextElementSibling;
+                if (errorMessage && errorMessage.classList.contains('error-message')) {
+                    errorMessage.textContent = '';
+                }
+            });
+        }
+
+        // Doctor Search
+        async function searchDoctors() {
+            const addressInput = document.getElementById('doctorAddress');
+            const pincodeInput = document.getElementById('doctorPincode');
+            const resultsDiv = document.getElementById('doctorResults');
+
+            if (!validateInput('doctorAddress', 'address') || !validateInput('doctorPincode', 'pincode')) {
+                return;
+            }
+
+            resultsDiv.innerHTML = '<p>Loading...</p>';
+            try {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                const mockResults = [
+                    { name: 'Dr. John Smith', specialty: 'Cardiology', address: '123 Main St', distance: '2 km' },
+                    { name: 'Dr. Jane Doe', specialty: 'General Medicine', address: '456 Park Ave', distance: '5 km' }
+                ];
+
+                resultsDiv.innerHTML = mockResults.map(doctor => `
+                    <div class="doctor">
+                        <h3>${doctor.name}</h3>
+                        <p>Specialty: ${doctor.specialty}</p>
+                        <p>Address: ${doctor.address}</p>
+                        <p>Distance: ${doctor.distance}</p>
+                    </div>
+                `).join('');
+            } catch (error) {
+                resultsDiv.innerHTML = '<p>Error fetching doctors. Please try again.</p>';
+            }
+        }
+
+        function clearDoctorSearch() {
+            const form = document.getElementById('doctor-form');
+            form.reset();
+            document.getElementById('doctorResults').innerHTML = '';
+            ['doctorAddress', 'doctorPincode'].forEach(id => {
+                const input = document.getElementById(id);
+                input.style.border = 'none';
+                const errorMessage = input.nextElementSibling;
+                if (errorMessage && errorMessage.classList.contains('error-message')) {
+                    errorMessage.textContent = '';
+                }
+            });
+        }
+
+        // Health Advice Chatbot
+        async function sendHealthChatMessage() {
+            const chatInput = document.getElementById('healthChatInput');
+            const chatbox = document.getElementById('healthChatbox');
+            const query = chatInput.value.trim().toLowerCase();
+
+            if (!query) {
+                alert('Please enter a question.');
+                return;
+            }
+
+            const userMessage = document.createElement('p');
+            userMessage.className = 'user-message';
+            userMessage.textContent = query;
+            chatbox.appendChild(userMessage);
+            chatbox.scrollTop = chatbox.scrollHeight;
+            chatInput.value = '';
+
+            const loadingMessage = document.createElement('p');
+            loadingMessage.className = 'bot-message';
+            loadingMessage.textContent = 'Loading...';
+            chatbox.appendChild(loadingMessage);
+            chatbox.scrollTop = chatbox.scrollHeight;
+
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            loadingMessage.remove();
+
+            const responses = {
+                'fever': 'For a fever, ensure you stay hydrated, rest, and take over-the-counter medications like paracetamol. Consult a doctor if it persists.',
+                'headache': 'Try resting in a quiet, dark room and stay hydrated. Over-the-counter pain relievers may help. Consult a doctor if severe.',
+                'cold': 'Rest, drink warm fluids, and consider over-the-counter cold remedies. See a doctor if symptoms worsen.'
+            };
+
+            const response = Object.keys(responses).find(key => query.includes(key)) 
+                ? responses[Object.keys(responses).find(key => query.includes(key))]
+                : 'I am not sure about that. Please consult a doctor for professional advice.';
+
+            const botMessage = document.createElement('p');
+            botMessage.className = 'bot-message';
+            botMessage.textContent = response;
+            chatbox.appendChild(botMessage);
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+
+        // User Data Saving
+        function saveUserData() {
+            const userDataInput = document.getElementById('userData');
+            const userFilesInput = document.getElementById('userFiles');
+
+            if (!validateInput('userData', 'userData')) {
+                return;
+            }
+
+            alert('Data saved successfully.');
+            userDataInput.value = '';
+            userFilesInput.value = '';
+        }
+
+        // Account Creation Success
+        function showSuccessPage() {
+            showSection('account-success');
+        }
+
+        // Geolocation Support for Address and Pincode
+        function setupGeolocation() {
+            const forms = [
+                { addressId: 'hospitalAddress', pincodeId: 'hospitalPincode', formId: 'hospital-form' },
+                { addressId: 'pharmacyAddress', pincodeId: 'pharmacyPincode', formId: 'pharmacy-form' },
+                { addressId: 'doctorAddress', pincodeId: 'doctorPincode', formId: 'doctor-form' }
+            ];
+
+            forms.forEach(({ addressId, pincodeId, formId }) => {
+                const addressInput = document.getElementById(addressId);
+                const pincodeInput = document.getElementById(pincodeId);
+                const container = document.getElementById(formId);
+                const geoButton = document.createElement('button');
+                geoButton.textContent = 'Use My Location';
+                geoButton.classList.add('geo-btn');
+                geoButton.style.margin = '10px auto';
+                geoButton.style.display = 'block';
+                geoButton.addEventListener('click', () => {
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(
+                            async (position) => {
+                                const { latitude, longitude } = position.coords;
+                                try {
+                                    const mockLocation = {
+                                        address: '123 Main St, City, State',
+                                        pincode: '123456'
+                                    };
+
+                                    addressInput.value = mockLocation.address;
+                                    pincodeInput.value = mockLocation.pincode;
+                                    validateInput(addressId, 'address');
+                                    validateInput(pincodeId, 'pincode');
+                                } catch (error) {
+                                    alert('Error fetching location. Please enter manually.');
+                                }
+                            },
+                            (error) => {
+                                alert('Geolocation access denied. Please enter address manually.');
+                            }
+                        );
+                    } else {
+                        alert('Geolocation is not supported by your browser.');
+                    }
+                });
+                container.insertBefore(geoButton, addressInput);
+            });
+        }
+
+        // Voice Input for Health Advice Chatbot
+        function setupVoiceInput() {
+            const chatInput = document.getElementById('healthChatInput');
+            const chatContainer = chatInput.parentNode;
+            const voiceButton = document.createElement('button');
+            voiceButton.textContent = '🎤 Voice';
+            voiceButton.classList.add('voice-btn');
+            chatContainer.appendChild(voiceButton);
+
+            if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                const recognition = new SpeechRecognition();
+                recognition.lang = 'en-US';
+                recognition.interimResults = false;
+
+                voiceButton.addEventListener('click', () => {
+                    recognition.start();
+                    voiceButton.textContent = '🎤 Listening...';
+                    voiceButton.disabled = true;
+                });
+
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    chatInput.value = transcript;
+                    voiceButton.textContent = '🎤 Voice';
+                    voiceButton.disabled = false;
+                    sendHealthChatMessage();
+                };
+
+                recognition.onerror = (event) => {
+                    alert('Voice recognition error: ' + event.error);
+                    voiceButton.textContent = '🎤 Voice';
+                    voiceButton.disabled = false;
+                };
+
+                recognition.onend = () => {
+                    voiceButton.textContent = '🎤 Voice';
+                    voiceButton.disabled = false;
+                };
+            } else {
+                voiceButton.disabled = true;
+                voiceButton.title = 'Voice input not supported in this browser.';
+            }
+        }
+
+        // Image Fallback for Loading Errors
+        function setupImageFallback() {
+            const images = document.querySelectorAll('img');
+            const fallbackImages = {
+                'Website Logo': 'https://images.pexels.com/photos/3683056/pexels-photo-3683056.jpeg?auto=compress&cs=tinysrgb&w=800',
+                'Banner 1': 'https://images.pexels.com/photos/3683088/pexels-photo-3683088.jpeg?auto=compress&cs=tinysrgb&w=800',
+                'Banner 2': 'https://images.pexels.com/photos/4031867/pexels-photo-4031867.jpeg?auto=compress&cs=tinysrgb&w=800',
+                'Banner 3': 'https://images.pexels.com/photos/5452268/pexels-photo-5452268.jpeg?auto=compress&cs=tinysrgb&w=800',
+                'Fitness Image': 'https://images.pexels.com/photos/2294361/pexels-photo-2294361.jpeg?auto=compress&cs=tinysrgb&w=200',
+                'Offerings Image': 'https://images.pexels.com/photos/4386464/pexels-photo-4386464.jpeg?auto=compress&cs=tinysrgb&w=200',
+                'Products Image': 'https://images.pexels.com/photos/3685531/pexels-photo-3685531.jpeg?auto=compress&cs=tinysrgb&w=200',
+                'Account Image': 'https://images.pexels.com/photos/5327923/pexels-photo-5327923.jpeg?auto=compress&cs=tinysrgb&w=200',
+                'Hospitals Image': 'https://images.pexels.com/photos/236380/pexels-photo-236380.jpeg?auto=compress&cs=tinysrgb&w=200',
+                'Pharmacies Image': 'https://images.pexels.com/photos/3559347/pexels-photo-3559347.jpeg?auto=compress&cs=tinysrgb&w=200',
+                'Health Advice Image': 'https://images.pexels.com/photos/4386468/pexels-photo-4386468.jpeg?auto=compress&cs=tinysrgb&w=200',
+                'Fitness Advice Image': 'https://images.pexels.com/photos/416717/pexels-photo-416717.jpeg?auto=compress&cs=tinysrgb&w=200',
+                'Exercise Image': 'https://images.pexels.com/photos/841131/pexels-photo-841131.jpeg?auto=compress&cs=tinysrgb&w=200',
+                'Diet Image': 'https://images.pexels.com/photos/1640774/pexels-photo-1640774.jpeg?auto=compress&cs=tinysrgb&w=200',
+                'Skin Care Image': 'https://images.pexels.com/photos/3985167/pexels-photo-3985167.jpeg?auto=compress&cs=tinysrgb&w=200',
+                'Ayurvedic Image': 'https://images.pexels.com/photos/6642978/pexels-photo-6642978.jpeg?auto=compress&cs=tinysrgb&w=200',
+                'Medicines Image': 'https://images.pexels.com/photos/5938359/pexels-photo-5938359.jpeg?auto=compress&cs=tinysrgb&w=200',
+                'Doctors Image': 'https://images.pexels.com/photos/5215025/pexels-photo-5215025.jpeg?auto=compress&cs=tinysrgb&w=200',
+                'My Data Image': 'https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=200',
+                'Blogs Image': 'https://images.pexels.com/photos/267670/pexels-photo-267670.jpeg?auto=compress&cs=tinysrgb&w=200'
+            };
+
+            images.forEach(img => {
+                img.addEventListener('error', () => {
+                    const altText = img.alt;
+                    if (fallbackImages[altText]) {
+                        img.src = fallbackImages[altText];
+                    } else {
+                        img.src = 'https://images.pexels.com/photos/3683056/pexels-photo-3683056.jpeg?auto=compress&cs=tinysrgb&w=800';
+                    }
+                });
+            });
+        }
+
+        // Initialize Enhancements
+        document.addEventListener('DOMContentLoaded', () => {
+            setupGeolocation();
+            setupVoiceInput();
+            setupImageFallback();
+        });
+    </script>
+</body>
+</html>
